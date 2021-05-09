@@ -10,6 +10,10 @@ import Header from '../header/Header';
 import {List} from './style';
 import {ActivityIndicator} from 'react-native';
 
+//state
+import {connect} from "react-redux";
+import {asyncGetUsers} from "../../state/thunks";
+
 interface IItem {
   id: string;
   name: string;
@@ -17,7 +21,7 @@ interface IItem {
   image: string;
 }
 
-export default function UserComponent({navigation}: any) {
+function UserComponent({navigation, getData, users}: any) {
   const [superHeroes, setSuperHeroes] = React.useState([]);
 
   const handleGetHeroes = async () => {
@@ -28,13 +32,8 @@ export default function UserComponent({navigation}: any) {
   };
 
   React.useEffect(() => {
-    handleGetHeroes()
-      .then(response => {
-        setSuperHeroes(response);
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    getData()
+    setSuperHeroes(users)
   }, []);
 
   return (
@@ -55,3 +54,13 @@ export default function UserComponent({navigation}: any) {
     </Screen>
   );
 }
+
+const mapStateToProps = (state: object) => {
+  const {userReducer} = state
+  console.log(userReducer)
+  return userReducer
+}
+const mapDispatchToProps = (dispatch: any) => ({
+  getData: () => dispatch(asyncGetUsers())
+})
+export default connect(mapStateToProps, mapDispatchToProps)(UserComponent)

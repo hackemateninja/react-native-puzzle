@@ -1,6 +1,8 @@
 // packages
 import 'react-native-gesture-handler';
 import React from 'react';
+import store from './src/state/state';
+import {Provider} from 'react-redux';
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
 
 const client = new ApolloClient({
@@ -16,10 +18,12 @@ import {AuthProvider} from './src/Provider';
 
 export default function App() {
   return (
-    <ApolloProvider client={client}>
-      <AuthProvider>
-        <StackNavigator />
-      </AuthProvider>
-    </ApolloProvider>
+    <Provider store={store}>
+      <ApolloProvider client={client}>
+        <AuthProvider>
+          <StackNavigator />
+        </AuthProvider>
+      </ApolloProvider>
+    </Provider>
   );
 }
