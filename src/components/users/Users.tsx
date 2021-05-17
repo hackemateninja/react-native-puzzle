@@ -13,6 +13,7 @@ import {ActivityIndicator} from 'react-native';
 //state
 import {connect} from "react-redux";
 import {asyncGetUsers} from "../../state/thunks";
+import { useSelector } from 'react-redux'
 
 interface IItem {
   id: string;
@@ -21,9 +22,11 @@ interface IItem {
   image: string;
 }
 
-function UserComponent({navigation, getData, users}: any) {
+function UserComponent({navigation, getData}: any) {
   const [superHeroes, setSuperHeroes] = React.useState([]);
-
+  
+  const usersFromStoreHook = useSelector(state => state.userReducer.users)
+  
   const handleGetHeroes = async () => {
     const response = await fetch(
       'https://akabab.github.io/superhero-api/api/all.json',
@@ -33,8 +36,10 @@ function UserComponent({navigation, getData, users}: any) {
 
   React.useEffect(() => {
     getData()
-    setSuperHeroes(users)
   }, []);
+  
+  
+  console.log('from hook: ',usersFromStoreHook)
 
   return (
     <Screen>
@@ -57,8 +62,7 @@ function UserComponent({navigation, getData, users}: any) {
 
 const mapStateToProps = (state: object) => {
   const {userReducer} = state
-  console.log(userReducer)
-  return userReducer
+  return userReducer.users
 }
 const mapDispatchToProps = (dispatch: any) => ({
   getData: () => dispatch(asyncGetUsers())
